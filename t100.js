@@ -375,10 +375,17 @@ db.t100.aggregate([
     $facet: {
       data: [{ $skip: offset }, { $limit: limit }],
       metadata: [
-        { $count: "total" },
+        { $count: "totalResults" },
         {
           $addFields: {
             page: skip,
+            limit: limit,
+            totalPages: {
+                $round: {
+                    $divide: ["$totalResults", limit]
+                }
+            },
+            totalResults: { $sum: "$totalResults" }
           },
         },
       ],
